@@ -68,6 +68,18 @@ app.post("/usuarios", (req, res) => {
     }
   );
 });
+app.get("/tablas", (req, res) => {
+  db.query("SHOW TABLES", (error, resultados) => {
+    if (error) {
+      console.error(error);
+      return res.status(500).json({
+        error: error.message
+      });
+    }
+
+    res.json(resultados);
+  });
+});
 // Puerto de Clever Cloud
 const PORT = process.env.PORT || 8080;
 
