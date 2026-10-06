@@ -1,9 +1,16 @@
 const express = require("express");
 const mysql = require("mysql2");
+const cors = require("cors");
 
 const app = express();
 
+// ========================================
+// CONFIGURACIÓN
+// ========================================
+
+app.use(cors());
 app.use(express.json());
+
 
 // ========================================
 // CONEXIÓN CON MYSQL DE CLEVER CLOUD
@@ -21,13 +28,19 @@ const db = mysql.createPool({
   queueLimit: 0
 });
 
-// Comprobar conexión con MySQL
+
+// ========================================
+// COMPROBAR CONEXIÓN CON MYSQL
+// ========================================
+
 db.query("SELECT 1", (error) => {
+
   if (error) {
     console.error("Error al conectar con MySQL:", error);
   } else {
     console.log("Conectado correctamente a MySQL");
   }
+
 });
 
 
@@ -36,15 +49,17 @@ db.query("SELECT 1", (error) => {
 // ========================================
 
 app.get("/", (req, res) => {
+
   res.json({
     ok: true,
-    mensaje: "API NUEVA FUNCIONANDO 12345"
+    mensaje: "API FUNCIONANDO CORRECTAMENTE"
   });
+
 });
 
 
 // ========================================
-// RUTA PARA PROBAR MYSQL
+// MOSTRAR TABLAS
 // ========================================
 
 app.get("/tablas", (req, res) => {
@@ -52,13 +67,18 @@ app.get("/tablas", (req, res) => {
   db.query("SHOW TABLES", (error, resultados) => {
 
     if (error) {
-      console.error("Error al consultar las tablas:", error);
+
+      console.error(
+        "Error al consultar las tablas:",
+        error
+      );
 
       return res.status(500).json({
         ok: false,
         mensaje: "Error al consultar MySQL",
         error: error.message
       });
+
     }
 
     res.json({
@@ -70,15 +90,22 @@ app.get("/tablas", (req, res) => {
 
 });
 
+
 // ========================================
 // REGISTRAR USUARIO
 // ========================================
 
 app.post("/usuarios", (req, res) => {
 
-  const { nombre, correo, contraseña } = req.body;
+  const {
+    nombre,
+    correo,
+    contraseña
+  } = req.body;
 
-  // Verificar campos
+
+  // Comprobar que existan todos los datos
+
   if (!nombre || !correo || !contraseña) {
 
     return res.status(400).json({
@@ -88,13 +115,18 @@ app.post("/usuarios", (req, res) => {
 
   }
 
+
   // Consulta SQL
+
   const sql = `
-    INSERT INTO Usuarios (nombre, correo, contraseña)
+    INSERT INTO Usuarios
+    (nombre, correo, contraseña)
     VALUES (?, ?, ?)
   `;
 
+
   // Ejecutar consulta
+
   db.query(
     sql,
     [nombre, correo, contraseña],
@@ -115,6 +147,9 @@ app.post("/usuarios", (req, res) => {
 
       }
 
+
+      // Usuario registrado
+
       res.status(201).json({
 
         ok: true,
@@ -132,22 +167,26 @@ app.post("/usuarios", (req, res) => {
 
 
 // ========================================
-// RUTA PARA MANEJAR RUTAS QUE NO EXISTEN
+// RUTAS QUE NO EXISTEN
 // ========================================
 
 app.use((req, res) => {
 
   res.status(404).json({
+
     ok: false,
+
     mensaje: "Ruta no encontrada",
+
     ruta: req.originalUrl
+
   });
 
 });
 
 
 // ========================================
-// PUERTO DE CLEVER CLOUD
+// PUERTO
 // ========================================
 
 const PORT = process.env.PORT || 8080;
