@@ -27,7 +27,8 @@ db.connect((error) => {
 // Ruta de prueba
 app.get("/", (req, res) => {
   res.json({
-    mensaje: "API funcionando correctamente"
+    mensaje: "API NUEVA FUNCIONANDO",
+    version: "2"
   });
 });
 // Registrar usuario
