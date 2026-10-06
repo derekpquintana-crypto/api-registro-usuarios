@@ -70,37 +70,6 @@ app.get("/tablas", (req, res) => {
 
 });
 
-app.get("/crear-tabla", (req, res) => {
-
-  const sql = `
-    CREATE TABLE IF NOT EXISTS Usuarios (
-      id INT AUTO_INCREMENT PRIMARY KEY,
-      nombre VARCHAR(100) NOT NULL,
-      correo VARCHAR(150) NOT NULL UNIQUE,
-      contraseña VARCHAR(255) NOT NULL
-    )
-  `;
-
-  db.query(sql, (error) => {
-
-    if (error) {
-      console.error("Error al crear tabla:", error);
-
-      return res.status(500).json({
-        ok: false,
-        mensaje: "No se pudo crear la tabla",
-        error: error.message
-      });
-    }
-
-    res.json({
-      ok: true,
-      mensaje: "Tabla Usuarios creada correctamente"
-    });
-
-  });
-
-});
 // ========================================
 // REGISTRAR USUARIO
 // ========================================
