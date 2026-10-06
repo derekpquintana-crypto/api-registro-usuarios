@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Prueba API</title>
+</head>
+
+<body>
+
+  <h2>Prueba de registro</h2>
+
+  <button onclick="registrarUsuario()">
+    Registrar usuario de prueba
+  </button>
+
+  <pre id="resultado"></pre>
+
+  <script>
+
+    async function registrarUsuario() {
+
+      const datos = {
+        nombre: "Usuario Prueba",
+        correo: "prueba123@correo.com",
+        contraseña: "12345678"
+      };
+
+      try {
+
+        const respuesta = await fetch(
+          "https://app-e06274d7-3ad2-4a4f-9062-5d8460376a5f.cleverapps.io/usuarios",
+          {
+            method: "POST",
+
+            headers: {
+              "Content-Type": "application/json"
+            },
+
+            body: JSON.stringify(datos)
+          }
+        );
+
+        const resultado = await respuesta.json();
+
+        document.getElementById("resultado").textContent =
+          JSON.stringify(resultado, null, 2);
+
+      } catch (error) {
+
+        document.getElementById("resultado").textContent =
+          "Error: " + error.message;
+
+      }
+
+    }
+
+  </script>
+
+</body>
+</html>
