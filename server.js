@@ -30,7 +30,44 @@ app.get("/", (req, res) => {
     mensaje: "API funcionando correctamente"
   });
 });
+// Registrar usuario
+app.post("/usuarios", (req, res) => {
 
+  const { nombre, correo, contraseña } = req.body;
+
+  if (!nombre || !correo || !contraseña) {
+    return res.status(400).json({
+      mensaje: "Todos los campos son obligatorios"
+    });
+  }
+
+  const sql = `
+    INSERT INTO Usuarios (nombre, correo, contraseña)
+    VALUES (?, ?, ?)
+  `;
+
+  db.query(
+    sql,
+    [nombre, correo, contraseña],
+    (error, resultado) => {
+
+      if (error) {
+        console.error("Error al registrar usuario:", error);
+
+        return res.status(500).json({
+          mensaje: "Error al registrar usuario"
+        });
+      }
+
+      res.status(201).json({
+        ok: true,
+        mensaje: "Usuario registrado correctamente",
+        id: resultado.insertId
+      });
+
+    }
+  );
+});
 // Puerto de Clever Cloud
 const PORT = process.env.PORT || 8080;
 
